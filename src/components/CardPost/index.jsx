@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Author } from "../Author";
 import { ModalComment } from "../ModalComment";
 import styles from "./cardpost.module.css";
@@ -5,6 +6,25 @@ import { ThumbsUpButton } from "./ThumbsUpButton";
 import { Link } from "react-router";
 
 export const CardPost = ({ post }) => {
+  const [likes, setLikes] = useState(post.likes);
+
+  const handleLikeButton = () => {
+    useEffect(() => {
+      fetch(`http://localhost:3000/blog-posts/${post.id}/like`, {
+        method: 'POST'
+      }).then(
+        (respostaApi) => {
+          if (respostaApi.ok) {
+            setLikes((oldState) => {
+              return oldState + 1;
+            });
+            
+          }
+        },
+      );
+    }, []);
+  };
+
   return (
     <article className={styles.card}>
       <header className={styles.header}>
@@ -20,8 +40,8 @@ export const CardPost = ({ post }) => {
       <footer className={styles.footer}>
         <div className={styles.actions}>
           <div className={styles.action}>
-            <ThumbsUpButton loading={false} />
-            <p>{post.likes}</p>
+            <ThumbsUpButton loading={false} onClick={handleLikeButton} />
+            <p>{likes}</p>
           </div>
           <div className={styles.action}>
             <ModalComment />

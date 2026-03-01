@@ -16,12 +16,15 @@ export const BlogPost = () => {
   useEffect(() => {
     fetch(`http://localhost:3000/blog-posts/slug/${slug}`)
       .then((respostaApi) => {
+        if(respostaApi.status == 404){
+          navigate('/not-found')
+        }
         return respostaApi.json();
       })
       .then((resposta) => {
         setPost(resposta);
       });
-  }, [slug]);
+  }, [navigate, slug]);
 
   if (!post) {
     return null;
