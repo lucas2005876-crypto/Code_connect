@@ -9,20 +9,20 @@ export const CardPost = ({ post }) => {
   const [likes, setLikes] = useState(post.likes);
 
   const handleLikeButton = () => {
-    useEffect(() => {
-      fetch(`http://localhost:3000/blog-posts/${post.id}/like`, {
-        method: 'POST'
-      }).then(
-        (respostaApi) => {
-          if (respostaApi.ok) {
-            setLikes((oldState) => {
-              return oldState + 1;
-            });
-            
-          }
-        },
-      );
-    }, []);
+    const token = localStorage.getItem("access-token");
+
+    fetch(`http://localhost:3000/blog-posts/${post.id}/like`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }).then((respostaApi) => {
+      if (respostaApi.ok) {
+        setLikes((oldState) => {
+          return oldState + 1;
+        });
+      }
+    });
   };
 
   return (
