@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { http } from '../api'
 
 export const useAuth = () => {
   const [user, setUser] = useState(null)
@@ -20,21 +21,12 @@ export const useAuth = () => {
   const register = async (name, email, password) => {
     try {
 
-      const respostaApi = await fetch(`http://localhost:3000/auth/register`, {
-        method: 'POST', 
-        headers:{
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+      await http.post(`auth/register`, {}, {
           name: name,
           email: email,
           password: password
-        })
+        
       })
-
-      if(!respostaApi.ok){
-        throw new Error('Http error: ' + respostaApi.status)
-      }
 
       return { success: true}
     } 
@@ -46,31 +38,18 @@ export const useAuth = () => {
   const login = async (email, password) => {
     try {
 
-      const respostaApi = await fetch(`http://localhost:3000/auth/login`, {
-        method: 'POST', 
-        headers:{
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+      const respostaApi = await http.post(`auth/login`, {
           email: email,
           password: password
-        })
       })
-
-    
-
-      if(!respostaApi.ok){
-        throw new Error('Http error: ' + respostaApi.status)
-      }
-
-      const data = await respostaApi.json()
+      const data = respostaApi.data
 
       setUser(data.user)
       localStorage.setItem('auth_user', JSON.stringify(data.user))
       localStorage.setItem('access_token', data.access_token)
 
       
-      return { success: true, user }
+      return { success: true, user: data.user }
     } 
     catch (error) {
       return { success: false, error: error.message }
