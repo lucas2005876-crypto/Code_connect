@@ -11,14 +11,20 @@ import { http } from "../../api";
 
 export const BlogPost = () => {
   const { slug } = useParams();
-  const [post, setPost] = useState();
+  const [post, setPost] = useState(null);
   const navigate = useNavigate();
+  const [comments, setComments] = useState([]);
+
+  const handleNewComment = (newComment) => {
+    setComments([newComment, ...comments]);
+  };
 
   useEffect(() => {
     http
       .get(`blog-posts/slug/${slug}`)
       .then((respostaApi) => {
         setPost(respostaApi.data);
+        setComments(respostaApi.data.comments);
       })
       .catch((error) => {
         if (error.status == 404) {
@@ -53,9 +59,9 @@ export const BlogPost = () => {
               <p>{post.likes}</p>
             </div>
             <div className={styles.action}>
-              <ModalComment />
+              <ModalComment onSuccess={handleNewComment} postId={post?.id} />
 
-              <p>{post.comments.length}</p>
+              <p>{comments.length}</p>
             </div>
           </div>
           <Author author={post.author} />
@@ -65,7 +71,7 @@ export const BlogPost = () => {
       <div className={styles.code}>
         <ReactMarkdown>{post.markdown}</ReactMarkdown>
       </div>
-      <CommentList comments={post.comments} />
+      <CommentList comments={comments} />
     </main>
   );
 };
