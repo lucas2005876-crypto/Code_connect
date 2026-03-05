@@ -12,7 +12,6 @@ import { http } from "../../api";
 import { useAuth } from "../../hooks/useAuth";
 
 export const ModalComment = ({ isEditing, onSuccess, postId, commentId, defaultValue }) => {
-  const token = localStorage.getItem("access_token");
   const modalRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useAuth();
@@ -32,11 +31,7 @@ export const ModalComment = ({ isEditing, onSuccess, postId, commentId, defaultV
             {
               text: text,
             },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
+            
           )
           .then((respostaApi) => {
             modalRef.current.closeModal();
@@ -49,11 +44,6 @@ export const ModalComment = ({ isEditing, onSuccess, postId, commentId, defaultV
             `comments/post/${postId}`,
             {
               text: text,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
             },
           )
           .then((respostaApi) => {

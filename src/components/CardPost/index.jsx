@@ -17,24 +17,12 @@ export const CardPost = ({ post }) => {
   };
 
   const handleLikeButton = () => {
-    const token = localStorage.getItem("access_token");
-
     try {
-      http
-        .post(
-          `blog-posts/${post.id}/like`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        )
-        .then(() => {
-          setLikes((oldState) => {
-            return oldState + 1;
-          });
+      http.post(`blog-posts/${post.id}/like`, {}).then(() => {
+        setLikes((oldState) => {
+          return oldState + 1;
         });
+      });
     } catch (error) {
       console.error("Erro ao adicionar like:", error);
     }
